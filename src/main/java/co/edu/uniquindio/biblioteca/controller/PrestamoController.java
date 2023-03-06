@@ -41,6 +41,7 @@ public class PrestamoController {
 
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Respuesta<String>> delete(@PathVariable long codigo) {
-        return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("Prestamo eliminado correctamente") );
+        prestamoServicio.delete(codigo);
+        return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("Prestamo eliminado correctamente"));
     }
 }

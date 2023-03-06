@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,5 +34,8 @@ public class Prestamo implements Serializable {
 
     @ManyToMany
     private List<Libro> libros;
+
+    @Column(nullable = false)
+    private Boolean estado;
 
 }

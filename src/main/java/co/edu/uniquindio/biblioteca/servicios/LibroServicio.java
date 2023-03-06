@@ -30,6 +30,9 @@ public class LibroServicio {
         if(guardado.isPresent()){
             throw new RuntimeException("El libro con el isbn "+libro.isbn()+" ya existe");
         }
+        if (libro.idAutores().isEmpty()){
+            throw new RuntimeException("El libro no tiene ningun autor");
+        }
         return convertir(libroRepo.save(convertir(libro)));
     }
 
@@ -62,7 +65,7 @@ public class LibroServicio {
     }
 
     private Libro convertir(LibroDTO libro){
-        return Libro.builder()
+        Libro lib = Libro.builder()
                 .isbn(libro.isbn())
                 .nombre(libro.nombre())
                 .genero(libro.genero())
@@ -70,6 +73,7 @@ public class LibroServicio {
                 .unidades(libro.unidades())
                 .autor(obtenerAutores(libro.idAutores()))
                 .build();
+        return lib;
     }
 
     private LibroGet convertir(Libro libro) {
@@ -96,6 +100,10 @@ public class LibroServicio {
     }
 
     private List<Autor> obtenerAutores(List<Long> idAutores) {
+
+        if (idAutores.isEmpty()){
+            return null;
+        }
         List<Autor> autores = autorRepo.findAllById( idAutores );
 
         if(autores.size()!=idAutores.size()){

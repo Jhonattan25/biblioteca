@@ -37,6 +37,7 @@ public class PrestamoServicio {
     public List<PrestamoGet> findAll() {
         return prestamoRepo.findAll()
                 .stream()
+                .filter(p -> p.getEstado())
                 .map(p -> convertir(p))
                 .collect(Collectors.toList());
     }
@@ -46,12 +47,14 @@ public class PrestamoServicio {
 
         Prestamo prestamoNuevo = convertir(prestamo);
         prestamoNuevo.setCodigo(codigo);
-        return convertir(prestamoNuevo);
+        return convertir(prestamoRepo.save(prestamoNuevo));
     }
 
     public void delete(long codigo) {
-        obtenerPrestamo(codigo);
-        prestamoRepo.deleteById(codigo);
+        Prestamo prestamo = obtenerPrestamo(codigo);
+        prestamo.setEstado(false);
+        //prestamoRepo.deleteById(codigo);
+        prestamoRepo.save(prestamo);
     }
 
 
@@ -103,6 +106,7 @@ public class PrestamoServicio {
                 .fechaPrestamo(LocalDateTime.now())
                 .fechaDevolucion(prestamoDTO.fechaDevolucion())
                 .libros(obtenerLibros(prestamoDTO.isbnLibros()))
+                .estado(true)
                 .build();
     }
 

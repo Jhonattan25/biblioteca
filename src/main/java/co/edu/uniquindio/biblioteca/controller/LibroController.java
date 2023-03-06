@@ -33,13 +33,14 @@ public class LibroController {
         return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("OK", libroServicio.findById(isbn)) );
     }
 
-    @PutMapping
+    @PutMapping("/{isbn}")
     public ResponseEntity<Respuesta<LibroGet>> update(@PathVariable String isbn, @RequestBody LibroDTO libroDTO) {
         return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("Libro correctamente", libroServicio.update(isbn, libroDTO)) );
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{isbn}")
     public ResponseEntity<Respuesta<String>> delete(@PathVariable String isbn) {
+        libroServicio.delete(isbn);
         return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("Libro eliminado correctamente") );
     }
 }
