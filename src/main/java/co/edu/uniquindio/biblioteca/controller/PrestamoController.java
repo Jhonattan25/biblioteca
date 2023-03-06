@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +43,25 @@ public class PrestamoController {
 
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Respuesta<String>> delete(@PathVariable long codigo) {
-        return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("Prestamo eliminado correctamente") );
+        prestamoServicio.delete(codigo);
+        return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("Prestamo eliminado correctamente"));
+    }
+
+    @GetMapping("/cliente/{clienteId}")
+    public ResponseEntity<Respuesta<List<PrestamoGet>>> findByCliente(@PathVariable long clienteId) {
+        return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("OK"
+                , prestamoServicio.findAllByCliente(clienteId)) );
+    }
+
+    @GetMapping("/fecha/{fecha}")
+    public ResponseEntity<Respuesta<List<PrestamoGet>>> findByCliente(@PathVariable LocalDate fecha) {
+        return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("OK"
+                , prestamoServicio.findAllByFecha(fecha)) );
+    }
+
+    @GetMapping("/libro/{isbn}/contar")
+    public ResponseEntity<Respuesta<Integer>> findByCliente(@PathVariable String isbn) {
+        return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("OK"
+                , prestamoServicio.contarPrestamosPorIsbn(isbn)) );
     }
 }
