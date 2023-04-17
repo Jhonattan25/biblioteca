@@ -16,14 +16,14 @@ services:
       context: ./clientes
       dockerfile: Dockerfile
     depends_on:
-      - mongo-service
-      - eureka-server
+      mongo-service:
+        condition: service_started
+      eureka-server:
+        condition: service_started
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://root:root@mongo-service:27017/clientes?authSource=admin
       - SPRING_APPLICATION_NAME=cliente-service
       - EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://eureka-server:8761/eureka/
-    ports:
-      - "8085-8090:8090"
     networks:
       - net_biblioteca
 
@@ -39,14 +39,12 @@ services:
         condition: service_started
     environment:
       - SPRING_DATASOURCE_DRIVER-CLASS-NAME=com.mysql.cj.jdbc.Driver
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mariadb-service:3306/ejemplo
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mariadb-service:3306/libros?createDatabaseIfNotExist=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_APPLICATION_NAME=libro-service
       - EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://eureka-server:8761/eureka/
-    ports:
-      - 8084:8084
     networks:
       - net_biblioteca
 
@@ -56,20 +54,18 @@ services:
       dockerfile: Dockerfile
     container_name: prestamo-service
     depends_on:
-      mongo-service:
+      mariadb-prestamos:
         condition: service_started
       eureka-server:
         condition: service_started
     environment:
       - SPRING_DATASOURCE_DRIVER-CLASS-NAME=com.mysql.cj.jdbc.Driver
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mariadb-prestamos:3306/prestamos
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mariadb-prestamos:3306/prestamos?createDatabaseIfNotExists
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_APPLICATION_NAME=prestamo-service
       - EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://eureka-server:8761/eureka/
-    ports:
-      - 8083:8083
     networks:
       - net_biblioteca
 
@@ -120,7 +116,7 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo-service:27017/
     networks:
       - net_biblioteca
-  
+
   mariadb-service:
     image: 'mariadb'
     container_name: mariadb-service
@@ -129,6 +125,8 @@ services:
       - MARIADB_USER=root
       - MARIADB_PASSWORD=root
       - MARIADB_ROOT_PASSWORD=root
+    volumes:
+      - ./Config/mysql:/var/lib/mysql
     networks:
       - net_biblioteca
 
