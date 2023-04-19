@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "cliente-service", url = "http://gateway-service:8080/api/cliente")
+@FeignClient(name = "cliente-service", path = "/api/cliente")
 public interface ClienteFeingClient {
     @GetMapping("/{idCliente}")
     Respuesta<ClienteGetDTO> findById(@PathVariable String idCliente);
